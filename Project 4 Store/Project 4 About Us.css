@@ -1,0 +1,64 @@
+body{
+	color: lime;
+	text-align: center;
+	animation: blink 1s linear infinite;
+	-webkit-animation: blink 1s linear infinite;
+	unicode-bidi: bidi-override;
+}
+p{
+	font-size: 50px;
+	font-weight: bold;
+	text-align: center;
+}
+@keyframes blink{
+  0% {
+    background: violet;
+  }
+  14.3% {
+    background: indigo;
+  }
+  28.6% {
+    background: blue;
+  }
+  42.9% {
+    background: green;
+  }
+  57.2% {
+    background: yellow;
+  }
+  71.5% {
+    background: orange;
+  }
+  85.8% {
+    background: red;
+  }
+  100% {
+    background: violet;
+  }
+}
+@-webkit-keyframes blink{
+  0% {
+    background: violet;
+  }
+  14.3% {
+    background: indigo;
+  }
+  28.6% {
+    background: blue;
+  }
+  42.9% {
+    background: green;
+  }
+  57.2% {
+    background: yellow;
+  }
+  71.5% {
+    background: orange;
+  }
+  85.8% {
+    background: red;
+  }
+  100% {
+    background: violet;
+  }
+}

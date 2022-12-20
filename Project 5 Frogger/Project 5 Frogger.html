@@ -1,0 +1,371 @@
+<html>
+	<head>
+		<style>
+			canvas{
+				background: #dddddd;
+			}
+			body{
+				color: lime;
+				background-color: black;
+				font-size: 50;
+			}
+		</style>
+		<script>
+			//This class represents a log object
+			function logClass(logX, logY, logWidth, logHeight){	//Location, Dimensions
+				this.x = logX;
+				this.y = logY;
+				this.width = logWidth;
+				this.height = logHeight;
+				//This method will be called by the gameUpdate function. It should take care of all movement, including wrapping (the gameUpdate() function should not have to worry about wrapping)
+				this.move = function(){
+					if (level == 1){
+						this.x = this.x - 5;
+						if (this.x + 100 <= 0){
+							this.x = cWidth;
+						}
+					}
+					if (level == 2){
+						this.x = this.x - 10;
+						if (this.x + 100 <= 0){
+							this.x = cWidth;
+						}
+					}
+					if (level == 3){
+						this.x = this.x - 15;
+						if (this.x + 100 <= 0){
+							this.x = cWidth;
+						}
+					}
+					if (level == 4){
+						this.x = this.x - 20;
+						if (this.x + 100 <= 0){
+							this.x = cWidth;
+						}
+					}
+					if (level == 5){
+						this.x = this.x - 50;
+						if (this.x + 100 <= 0){
+							this.x = cWidth;
+						}
+					}
+				}
+				//This method will be called by the gameDraw function. It should draw a picture of the log on the screen.
+				this.draw = function(){
+					c.drawImage(logImage, this.x, this.y, this.width, this.height);
+				}
+			}
+			//This class represents a car object
+			function carClass(carX, carY, carWidth, carHeight, reverse){
+				this.x = carX;
+				this.y = carY;
+				this.width = carWidth;
+				this.height = carHeight;
+				this.reverse = reverse;
+				//This method will be called by the gameUpdate function. It should take care of all movement, including wrapping (the gameUpdate() function should not have to worry about wrapping)
+				this.move2 = function(){
+					if (level == 1){
+						if (this.x <= 0){
+							this.reverse = true;
+						}
+						if (this.x >= cWidth - this.width){
+							this.reverse = false;
+						}
+						if (this.reverse == true){
+							this.x = this.x + 5;
+						}
+						if (this.reverse == false){
+							this.x = this.x - 5;
+						}
+					}
+					if (level == 2){
+						if (this.x <= 0){
+							this.reverse = true;
+						}
+						if (this.x >= cWidth - this.width){
+							this.reverse = false;
+						}
+						if (this.reverse == true){
+							this.x = this.x + 10;
+						}
+						if (this.reverse == false){
+							this.x = this.x - 10;
+						}
+					}
+					if (level == 3){
+						if (this.x <= 0){
+							this.reverse = true;
+						}
+						if (this.x >= cWidth - this.width){
+							this.reverse = false;
+						}
+						if (this.reverse == true){
+							this.x = this.x + 15;
+						}
+						if (this.reverse == false){
+							this.x = this.x - 15;
+						}
+					}
+					if (level == 4){
+						if (this.x <= 0){
+							this.reverse = true;
+						}
+						if (this.x >= cWidth - this.width){
+							this.reverse = false;
+						}
+						if (this.reverse == true){
+							this.x = this.x + 20;
+						}
+						if (this.reverse == false){
+							this.x = this.x - 20;
+						}
+					}
+					if (level == 5){
+						if (this.x <= 0){
+							this.reverse = true;
+						}
+						if (this.x >= cWidth - this.width){
+							this.reverse = false;
+						}
+						if (this.reverse == true){
+							this.x = this.x + 50;
+						}
+						if (this.reverse == false){
+							this.x = this.x - 50;
+						}
+					}
+				}
+				this.draw2 = function(){
+					if (this.reverse == true){
+						c.drawImage(carRightImage, this.x, this.y, this.width, this.height);
+					}
+					else{
+						c.drawImage(carLeftImage, this.x, this.y, this.width, this.height);
+					}
+				}
+				
+				
+			}
+			//This class represents the frog
+			function frogClass(frogX, frogY, frogWidth, frogHeight, direction){	//Location, Dimensions. Can be "Up", "Down", "Left", or "Right"
+				this.x = frogX;
+				this.y = frogY;
+				this.width = frogWidth;
+				this.height = frogHeight;
+				this.direction = direction;
+
+				//Methods for frog movement
+				this.hopLeft = function(){
+					if (newkeys[37]){
+						this.x = this.x - 75;
+						this.direction = "left";
+					}
+				}
+				this.hopRight = function(){
+					if (newkeys[39]){
+						this.x = this.x + 75;
+						this.direction = "right";
+					}
+				}
+				this.hopUp = function(){
+					if (newkeys[38]){
+						this.y = this.y - 75;
+						this.direction = "up";
+					}
+				}
+				this.hopDown = function(){
+					if (newkeys[40]){
+						this.y = this.y + 75;
+						this.direction = "down";
+					}
+				}
+				//This method will be called by the gameDraw function. It should draw a picture of the frog on the screen.
+				this.draw3 = function(){
+					if (this.direction == "up"){
+						c.drawImage(frogUpImage, this.x, this.y, this.width, this.height);
+					}
+					else if (this.direction == "down"){
+						c.drawImage(frogDownImage, this.x, this.y, this.width, this.height);
+					}
+					else if (this.direction == "left"){
+						c.drawImage(frogLeftImage, this.x, this.y, this.width, this.height);
+					}
+					else if (this.direction == "right"){
+						c.drawImage(frogRightImage, this.x, this.y, this.width, this.height);
+					}
+				}
+				//This function returns true if this frog intersects "obj", where "obj" is either a car object or a log object. Returns false otherwise. Example: if (frog1.intersects(log1)){ ... }
+				this.intersects = function(obj){
+					if (this.x < obj.x + obj.width && this.x + this.width > obj.x && this.y < obj.y + obj.height && this.y + this.height > obj.y){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+			//Canvas context; used to call Canvas methods
+			var c;
+
+			//Canvas width and height.
+			var cWidth, cHeight;
+
+			//Stores the current keyboard state
+			var curkeys = [];
+			
+			//Stores keys that have been newly pressed since last update
+			var newkeys = [];
+
+			var logImage = new Image();
+			logImage.src = "log.png";
+			
+			var carLeftImage = new Image();
+			carLeftImage.src = "leftcar.png";
+			
+			var carRightImage = new Image();
+			carRightImage.src = "rightcar.png";
+			
+			var frogUpImage = new Image();
+			frogUpImage.src = "frogUp.png";
+			
+			var frogDownImage = new Image();
+			frogDownImage.src = "frogDown.png";
+			
+			var frogLeftImage = new Image();
+			frogLeftImage.src = "frogLeft.png";
+			
+			var frogRightImage = new Image();
+			frogRightImage.src = "frogRight.png";
+			
+			var log = new logClass(800, 100, 100, 75);
+			var car = new carClass(800, 300, 100, 75, false);
+			var frog = new frogClass(200, 500, 100, 75, "up");
+			var winCounter = 0;
+			var deathCounter = 0;
+			var loseCounter = 0;
+			var lives = 3;
+			var level = 1;
+			
+			//The current game state, can be one of: "play", "win", "lose". You won't be working with this until Task #4
+			var gameState = "play";
+
+			//Initializes entire game framework. This method should only be called once, by the body onload event handler.
+			function gameFrameworkInit(){		
+				//Initialize key arrays
+				for (i = 0; i < 256; i++){
+					curkeys[i] = false;
+					newkeys[i] = false;
+				}
+			
+				//Initialize global variables for canvas
+				c = myCanvas.getContext('2d');
+				cWidth = myCanvas.width;
+				cHeight = myCanvas.height;
+
+
+				//Start listeners for getting keyboard state
+				window.addEventListener('keydown', function(e){if (!curkeys[e.keyCode]){curkeys[e.keyCode] = true; newkeys[e.keyCode] = true; }});
+				
+				window.addEventListener('keyup', function(e){ curkeys[e.keyCode] = false; });
+
+				//Schedule the update function to be called right before the next repaint. At the end of the update function, it will schedule itself to be called again before the NEXT repaint, and so on.
+				window.requestAnimationFrame(gameUpdate);
+			}
+			//Main update loop for the entire game
+			function gameUpdate(){
+				if (gameState == "play"){
+					log.move();
+				
+					car.move2();
+					
+					frog.hopLeft();
+					frog.hopRight();
+					frog.hopUp();
+					frog.hopDown();
+				}
+				if (frog.intersects(log) || frog.intersects(car)){
+					gameState = "lose";
+				}
+				if (frog.y <= 0){
+					gameState = "win";
+				}
+				if (gameState == "lose"){
+					if (newkeys[82]){
+						log.x = 800;
+						log.y = 100;
+					
+						car.x = 800;
+						car.y = 300;
+					
+						frog.x = 200;
+						frog.y = 500;
+						deathCounter++;
+						lives--;
+						if (lives == 0){
+							alert("You're out of lives! Try again!");
+							lives = 3;
+							level = 1;
+							loseCounter++;
+						}
+						gameState = "play";
+					}
+				}
+				if (gameState == "win"){
+					if (newkeys[32]){
+						log.x = 800;
+						log.y = 100;
+						
+						car.x = 800;
+						car.y = 300;
+						
+						frog.x = 200;
+						frog.y = 500;
+						winCounter++;
+						level++;
+						if (level == 3){
+							lives++;
+						}
+						
+						gameState = "play";
+					}
+				}
+				//Reset newkeys
+				for (i = 0; i < 256; i++){
+					newkeys[i] = false;
+				}
+
+				//At the end of the update function, repaint the screen
+				gameDraw();
+					
+				//Last thing the update function does is to schedule itself to be called again before the next repaint
+				window.requestAnimationFrame(gameUpdate);
+			}
+			// Main draw loop for the entire game
+			function gameDraw(){
+				//Clear the canvas before we draw the current frame
+				c.clearRect(0,0,cWidth,cHeight);
+
+				log.draw();
+				car.draw2();
+				frog.draw3();
+				
+				c.font = "24px Arial";
+				if (gameState == "win"){
+					c.fillText("You won! Press spacebar to play again!", 200, 100);
+				}
+				if (gameState == "lose"){
+					c.fillText("You lose! Press r to play again!", 200, 100);
+				}
+				c.fillText("Number of Wins: " + winCounter, 590, 24);
+				c.fillText("Number of Deaths: " + deathCounter, 570, 48);
+				c.fillText("Number of Losses: " + loseCounter, 570, 72)
+				c.fillText("Lives: " + lives, 700, 96);
+				c.fillText("Level: " + level, 700, 120);
+			}
+		</script>
+	</head>
+	<body onload="gameFrameworkInit()">	
+		<p> There are 5 levels. The 5th level is the hardest, so have fun! At level 3, you gain an extra life! </p>
+		<canvas id="myCanvas" width="800" height="600"></canvas>
+	</body>
+</html>

@@ -1,0 +1,38 @@
+body{
+	color: lime;
+	background-image: url("Giphy.gif");
+}
+.button{
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-left: auto;
+	margin-right: auto;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+	width: 10%;
+}
+.button1{
+    background-color: white; 
+    color: black; 
+    border: 2px solid #000000;
+}
+.button1:hover{
+    background-color: #0000FF;
+    color: white;
+}
+.listOfItems{
+	color: white;
+	font-size: 25px;
+	font-family: Comic Sans MS;
+	font-weight: bold;
+}
+.coolUnderlines{
+	text-decoration: underline;
+}

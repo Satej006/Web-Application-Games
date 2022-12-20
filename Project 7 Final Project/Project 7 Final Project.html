@@ -1,0 +1,761 @@
+<html>
+	<head>
+		<style>
+			canvas{
+				background: #dddddd;
+			}
+		</style>
+		<script>
+			//Canvas context; used to call Canvas methods
+			var c;
+
+			//Canvas width and height.
+			var cWidth = 800, cHeight = 600;
+
+			//Stores the current keyboard state
+			var curkeys = [];
+			
+			//Stores keys that have been newly pressed since last update
+			var newkeys = [];
+			
+			//Game State
+			var gameState = "splash";
+			
+			//Splash, Intro, and Outro Screens
+			var splash = new rectClass(0, 0, 800, 600, 3000);
+			var splashScreen = new Image();
+			splashScreen.src = "Splash.png";
+			var intro, outro;
+
+			//Level
+			var level = 1;
+			
+			//Lives
+			var lives = 3;
+			
+			//Score
+			var score = 0;
+			
+			//Timer
+			var counter = new timerClass(1000);
+			
+			//Time Shown
+			var tempHolder = 6;
+
+			//Zoomed in background
+			var background = new zoomScrollingBackgroundClass("Background.jpg", 7, 3000);
+			
+			//Patrick
+			var patrick = new patrickClass();
+			
+			//Marios
+			var mario1 = new marioClass(700, 369, "left", 900, 700);
+			var mario2 = new marioClass(1200, 369, "left", 1400, 1200);
+			var mario3 = new marioClass(1900, 369, "left", 2200, 1900);
+			var mario4 = new marioClass(1900, 369, "left", 1600, 1200);
+			var mario5 = new marioClass(1900, 369, "left", 500, 200);
+			
+			//Bubbles
+			var bubble = new bubbleClass(0, 0);
+			
+			//Platforms
+			var platform1 = new platformClass(800, 275, true);
+			var platform2 = new platformClass(1300, 260, true);
+			var platform3 = new platformClass(1800, 265, true);
+			var platform4 = new platformClass(2300, 270, false);
+			
+			//Krusty Krab
+			var krustyKrab = new krustyKrabClass();
+			
+			var sndBubble = new Audio("Bubble.mp3");
+			var sndJump = new Audio("Jump.mp3");
+			//Patrick creator
+			function patrickClass(){
+				//Constructor: Assign values for the following attributes: x, y, width, height, img, bInAir, currentYSpeed, and direction (can be "left" or "right")
+				this.x = 100;
+				this.y = 347;
+				this.width = 75;
+				this.height = 125;
+				this.img = new Image();
+				this.img.src = "PatrickLookingRight.png";
+				this.bInAir = false;
+				this.curYSpeed = 0;
+				this.direction = "right";
+				//Lets Patrick jump
+				this.jump = function(){
+					if (this.bInAir == false){
+						this.bInAir = true;
+						this.curYSpeed = 20;
+					}
+				}
+				//Updates Patrick
+				this.update = function(){
+					if (this.bInAir == true){
+						this.y -= this.curYSpeed;
+						this.curYSpeed--;
+						if (this.y >= 347){
+							this.y = 347;
+							this.bInAir = false;
+						}
+						if (this.curYSpeed < 0 && this.intersects(platform1)){
+								this.curYSpeed = 0;
+								this.bInAir = false;
+								this.y = platform1.y - this.height + 2;
+						}
+						if (this.curYSpeed < 0 && this.intersects(platform2) && this.y + 125 > platform2.y){
+								this.curYSpeed = 0;
+								this.bInAir = false;
+								this.y = platform2.y - this.height + 2;
+						}
+						if (this.curYSpeed < 0 && this.intersects(platform3) && this.y + 125 > platform3.y){
+								this.curYSpeed = 0;
+								this.bInAir = false;
+								this.y = platform3.y - this.height + 2;
+						}
+						if (this.curYSpeed < 0 && this.intersects(platform4) && this.y + 125 > platform4.y && platform4.bVisible == true){
+								this.curYSpeed = 0;
+								this.bInAir = false;
+								this.y = platform4.y - this.height + 2;
+						}
+					}
+					else{
+						if (this.y < 347 && this.intersects(platform1) == false && this.y < 347 && this.intersects(platform2) == false && this.y < 347 && this.intersects(platform3) == false && this.y < 347 && this.intersects(platform4) == false){
+							this.bInAir = true;
+						}
+					}
+				}
+				this.intersects = function(obj){
+					if (this.x < obj.x + obj.width && this.x + this.width > obj.x && this.y < obj.y + obj.height && this.y + this.height > obj.y){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+				//Draws Patrick
+				this.draw = function(){
+					if (this.direction == "right"){
+						this.img.src = "PatrickLookingRight.png";
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+					if (this.direction == "left"){
+						this.img.src = "PatrickLookingLeft.png";
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+			}
+			//Mario creator
+			function marioClass(marioX, marioY, marioDirection, marioRightPoint, marioLeftPoint){
+				//Constructor: Assign values for the following attributes: x, y, width, height, img, bInAir, currentYSpeed, and direction (can be "left" or "right")
+				this.x = marioX;
+				this.y = marioY;
+				this.width = 50;
+				this.height = 100;
+				this.img = new Image();
+				this.img.src = "MarioLookingLeft.png";
+				this.direction = marioDirection;
+				this.rightPoint = marioRightPoint;
+				this.leftPoint = marioLeftPoint;
+				this.bVisible = true;
+				this.bPicBounce = true;
+				this.isMovingRight = true;
+				this.update = function(){
+					if (this.bPicBounce == true){
+						if (this.x >= background.x + this.rightPoint){
+							this.isMovingRight = false;
+						}
+						if (this.x <= background.x + this.leftPoint){
+							this.isMovingRight = true;
+						}
+					}
+					if (this.isMovingRight == true){
+						this.direction = "right";
+						this.x += 3;
+					}
+					if (this.isMovingRight == false){
+						this.direction = "left";
+						this.x -= 3;
+					}
+					if (level < 2){
+						mario3.bVisible = false;
+					}
+					if (level < 3){
+						mario4.bVisible = false;
+						mario5.bVisible = false;
+					}
+				}
+				this.draw = function(){
+					//Draws Marios
+					if (this.direction == "right" && this.bVisible == true){
+						this.img.src = "MarioLookingRight.png";
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+					if (this.direction == "left" && this.bVisible == true){
+						this.img.src = "MarioLookingLeft.png";
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+			}
+			//Represents a bubble object that the patrick shoots
+			function bubbleClass(bubbleX, bubbleY){
+				//Constructor: Assign values for the following attributes: x, y, width, height, img, and bVisible (Set to false)
+				this.x = bubbleX;
+				this.y = bubbleY;
+				this.width = 30;
+				this.height = 30;
+				this.img = new Image();
+				this.img.src = "Bubble.png";
+				this.isVisible = false;
+				this.isMovingRight = false;
+				//If this bubble is visible, then move it to the right. If the bubble goes off the screen, mark it invisible.
+				this.update = function(){
+					if (this.isMovingRight == true){
+						this.x += 10;
+					}
+					if (this.isMovingRight == false){
+						this.x -= 10;
+					}
+					if (this.isVisible == true){
+						if (this.x > cWidth){
+							this.isVisible = false;
+						}
+						if (this.x < -30){
+							this.isVisible = false;
+						}
+					}
+					if (this.isVisible == false){
+						this.x = 0;
+						this.y = 0;
+					}
+				}
+				//If this bubble is visible, then draw it on the screen.
+				this.draw = function(){
+					if (this.isVisible == true){
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+				this.intersects = function(obj){
+					if (this.x < obj.x + obj.width && this.x + this.width > obj.x && this.y < obj.y + obj.height && this.y + this.height > obj.y){
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+			//Location, Dimensions, Image Files
+			function platformClass(platformX, platformY, platformVisible){
+				this.x = platformX;
+				this.y = platformY;
+				this.width = 200;
+				this.height = 25;
+				this.bVisible = platformVisible;
+				this.img = new Image();
+				this.img.src = "Platform.png";
+				this.draw = function(){
+					if (this.bVisible == true){
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+			}
+			function krustyKrabClass(){
+				this.x = 2700;
+				this.y = 320;
+				this.width = 200;
+				this.height = 150;
+				this.img = new Image();
+				this.img.src = "KrustyKrab.png";
+				this.draw = function(){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+			function resetScreen(){
+				background.x = 0;
+				tempHolder = 6;
+				patrick.x = background.x + 100;
+				patrick.y = 347;
+				patrick.bInAir = false;
+				mario1.x = background.x + 700;
+				mario2.x = background.x + 1200;
+				mario3.x = background.x + 1900;
+				mario4.x = background.x + 1200;
+				mario5.x = background.x + 200;
+				mario1.bVisible = true;
+				mario2.bVisible = true;
+				if (level < 2){
+					platform4.bVisible = false;
+				}
+				if (level >= 2){
+					mario3.bVisible = true;
+					platform4.bVisible = true;
+				}
+				if (level == 3){
+					mario4.bVisible = true;
+					mario5.bVisible = true;
+				}
+				bubble.isVisible = false;
+				platform1.x = 800;
+				platform2.x = 1300;
+				platform3.x = 1800;
+				platform4.x = 2300;
+				krustyKrab.x = background.x + 2700;
+				gameState = "play";
+			}
+			function resetGame(){
+				background.x = 0;
+				level = 1;
+				lives = 3;
+				score = 0;
+				tempHolder = 6;
+				patrick.x = background.x + 100;
+				patrick.y = 347;
+				patrick.bInAir = false;
+				mario1.x = background.x + 700;
+				mario2.x = background.x + 1200;
+				mario3.x = background.x + 1900;
+				mario4.x = background.x + 1200;
+				mario5.x = background.x + 200;
+				mario1.bVisible = true;
+				mario2.bVisible = true;
+				if (level < 2){
+					platform4.bVisible = false;
+				}
+				if (level >= 2){
+					mario3.bVisible = true;
+					platform4.bVisible = true;
+				}
+				if (level == 3){
+					mario4.bVisible = true;
+					mario5.bVisible = true;
+				}
+				bubble.isVisible = false;
+				platform1.x = 800;
+				platform2.x = 1300;
+				platform3.x = 1800;
+				platform4.x = 2300;
+				krustyKrab.x = background.x + 2700;
+				gameState = "play";
+			}
+			//This class can be used display & scroll a background image without looping. (The background image is bigger than the canvas size, and scrolling displays various parts of it on-screen)
+			function zoomScrollingBackgroundClass(bgSrc, bgSpeed, bgWidth){
+				//Constructor
+				this.img = new Image();
+				this.img.src = bgSrc;
+				this.width = bgWidth;
+				this.speed = bgSpeed;
+				this.x = 0;
+				//Scrolls the background image to the right. (So the character looks like it's moving to the left)
+				this.scrollRight = function(){
+					if (this.x + this.speed <= 0){
+						this.x += this.speed;
+					}
+				}
+				//Scrolls the background image to the left. (So the character looks like it's moving to the right)
+				this.scrollLeft = function(){
+					if (this.x > -this.width + cWidth){
+						this.x -= this.speed;
+					}
+				}
+				//Draw the background image
+				this.draw = function(){
+					c.drawImage(this.img, this.x, 0, this.width, cHeight);
+				}
+			}
+			function rectClass(x, y, width, height, time){
+				//Initialize this rectangle instance from the input parameters
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.timer = new timerClass(time);
+				this.draw = function(){
+					c.drawImage(splashScreen, this.x, this.y, this.width, this.height);
+				}
+			}
+			//This timer class keeps track of how much time has elapsed since the last time it fired.
+			function timerClass(timeIntervalMS){
+				//Initialize oldTime to be the time of creation
+				this.oldTime = new Date();
+
+				//Set interval to elapse before the timer fires
+				this.interval = timeIntervalMS;
+				
+				//Keeps track of the # of milliseconds accumulated since the last firing
+				this.accum = 0;
+
+				//This method returns true if the timer is ready to fire, false otherwise
+				//If it returns true, then resets fire interval
+				this.isReady = function(){
+					var curTime = new Date();
+					var delta = curTime - this.oldTime;
+
+					this.accum += delta;
+					this.oldTime = curTime;
+					if (this.accum > this.interval){
+						this.accum = 0;
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
+			}
+			//Initializes entire game framework. This method should only be called once, by the body onload event handler.
+			function gameFrameworkInit(){
+				//Initialize key arrays
+				for (i = 0; i < 256; i++){
+					curkeys[i] = false;
+					newkeys[i] = false;
+				}	
+				//Initialize global variables for canvas
+				c = myCanvas.getContext('2d');
+				cWidth = myCanvas.width;
+				cHeight = myCanvas.height;
+
+				//Start listeners for getting keyboard state
+				window.addEventListener('keydown', function(e){if (!curkeys[e.keyCode]){curkeys[e.keyCode] = true; newkeys[e.keyCode] = true;}});
+				
+				window.addEventListener('keyup', function(e){ curkeys[e.keyCode] = false;});
+
+				//Schedule the update function to be called right before the next repaint. At the end of the update function, it will schedule itself to be called again before the NEXT repaint, and so on.
+				window.requestAnimationFrame(gameUpdate);
+			}
+			//Main update loop for the entire game
+			function gameUpdate(){
+				if (gameState == "splash"){
+					if (splash.timer.isReady()){
+						gameState = "intro";
+					}
+					intro = new timerClass(7000);
+				}
+				if (gameState == "intro"){
+					if (intro.isReady()){
+						gameState = "play";
+					}
+				}
+				if (gameState == "loadingscreen"){
+					if (level == 1){
+						if (newkeys[16]){
+							resetScreen();
+						}
+					}
+					if (level == 2){
+						if (newkeys[16]){
+							resetScreen();
+						}
+					}
+					if (level == 3){
+						if (newkeys[16]){
+							resetScreen();
+						}
+					}
+				}
+				if (gameState == "play"){
+					if (counter.isReady()){
+						tempHolder--;
+					}
+					if (tempHolder == 0){
+						gameState = "gameover"
+					}
+					//Left
+					if (curkeys[37] && !curkeys[39]){	
+						patrick.direction = "left";
+						//End
+						if (patrick.x >= 325){
+							patrick.x -= 7;
+						}
+						//Middle
+						if (background.x < 0 && background.x > -2205){
+							background.scrollRight();
+							mario1.x += 7;
+							mario2.x += 7;
+							mario3.x += 7;
+							mario4.x += 7;
+							mario5.x += 7;
+							platform1.x += 7;
+							platform2.x += 7;
+							platform3.x += 7;
+							platform4.x += 7;
+							krustyKrab.x += 7;
+						}
+						else{
+							background.scrollRight();
+							//Beginning
+							if (background.x == 0 && patrick.x > 100){
+								patrick.x -= 7;
+								mario1.x += 7;
+								mario2.x += 7;
+								mario3.x += 7;
+								mario4.x += 7;
+								mario5.x += 7;
+								platform1.x += 7;
+								platform2.x += 7;
+								platform3.x += 7;
+								platform4.x += 7;
+								krustyKrab.x += 7;
+							}
+						}
+					}
+					//Right
+					if (curkeys[39] && !curkeys[37]){
+						patrick.direction = "right";
+						//Beginning
+						if (patrick.x <= 325){
+							patrick.x += 7;
+						}
+						//Middle
+						else{
+							background.scrollLeft();
+							//End
+							if (background.x > -2205){
+								mario1.x -= 7;
+								mario2.x -= 7;
+								mario3.x -= 7;
+								mario4.x -= 7;
+								mario5.x -= 7;
+								platform1.x -= 7;
+								platform2.x -= 7;
+								platform3.x -= 7;
+								platform4.x -= 7;
+								krustyKrab.x -= 7;
+							}
+							else{
+								patrick.x += 7;
+							}
+						}
+					}
+					//Space
+					if (newkeys[32]){
+						sndJump.currentTime = 0;
+						sndJump.play();
+						patrick.jump();
+					}
+					//Shoots bubbles
+					if (bubble.isVisible == false){
+						if (newkeys[13]){
+							sndBubble.currentTime = 0;
+							sndBubble.play();
+							bubble.x = patrick.x + 60;
+							bubble.y = patrick.y + 60;
+							bubble.isVisible = true;
+							if (patrick.direction == "right"){
+								bubble.isMovingRight = true;
+							}
+							if (patrick.direction == "left"){
+								bubble.isMovingRight = false;
+							}
+						}
+					}
+					if (patrick.intersects(mario1) && mario1.bVisible == true){
+						lives--;
+						if (lives > 0){
+							gameState = "death";
+						}
+						else{
+							gameState = "gameover";
+						}
+					}
+					if (patrick.intersects(mario2) && mario2.bVisible == true){
+						lives--;
+						if (lives > 0){
+							gameState = "death";
+						}
+						else{
+							gameState = "gameover";
+						}
+					}
+					if (patrick.intersects(mario3) && mario3.bVisible == true){
+						lives--;
+						if (lives > 0){
+							gameState = "death";
+						}
+						else{
+							gameState = "gameover";
+						}
+					}
+					if (patrick.intersects(mario4) && mario4.bVisible == true){
+						lives--;
+						if (lives > 0){
+							gameState = "death";
+						}
+						else{
+							gameState = "gameover";
+						}
+					}
+					if (patrick.intersects(mario5) && mario5.bVisible == true){
+						lives--;
+						if (lives > 0){
+							gameState = "death";
+						}
+						else{
+							gameState = "gameover";
+						}
+					}
+					if (patrick.intersects(krustyKrab)){
+						if (level < 4){
+							gameState = "loadingscreen";
+							level++;
+						}
+					}
+					if (level == 4){
+						gameState = "win";
+					}
+					//Hits Marios
+					if (bubble.intersects(mario1)){
+						if (mario1.bVisible == true){
+							bubble.isVisible = false;
+							score = score + 10;
+							tempHolder = tempHolder + 2;
+						}
+						mario1.bVisible = false;
+					}
+					if (bubble.intersects(mario2)){
+						if (mario2.bVisible == true){
+							bubble.isVisible = false;
+							score = score + 10;
+							tempHolder = tempHolder + 2;
+						}
+						mario2.bVisible = false;
+					}
+					if (bubble.intersects(mario3)){
+						if (mario3.bVisible == true){
+							bubble.isVisible = false;
+							score = score + 10;
+							tempHolder = tempHolder + 2;
+						}
+						mario3.bVisible = false;
+					}
+					if (bubble.intersects(mario4)){
+						if (mario4.bVisible == true){
+							bubble.isVisible = false;
+							score = score + 10;
+							tempHolder = tempHolder + 2;
+						}
+						mario4.bVisible = false;
+					}
+					if (bubble.intersects(mario5)){
+						if (mario5.bVisible == true){
+							bubble.isVisible = false;
+							score = score + 10;
+							tempHolder = tempHolder + 2;
+						}
+						mario5.bVisible = false;
+					}
+					patrick.update();
+					bubble.update();
+					mario1.update();
+					mario2.update();
+					if (level >= 2){
+						mario3.update();
+						platform4.bVisible = true;
+					}
+					if (level == 3){
+						mario4.update();
+						mario5.update();
+					}
+				}
+				if (gameState == "death"){
+					if (newkeys[82]){
+						resetScreen();
+					}
+				}
+				if (gameState == "win" || gameState == "gameover"){
+					if (newkeys[8]){
+						resetGame();
+					}
+				}
+				//Reset newkeys
+				for (i = 0; i < 256; i++){
+					newkeys[i] = false;
+				}
+				//At the end of the update function, repaint the screen
+				gameDraw();
+				
+				//Last thing the update function does is to schedule itself to be called again before the next repaint
+				window.requestAnimationFrame(gameUpdate);
+			}
+			//Main draw loop for the entire game
+			function gameDraw(){
+				//Clear the canvas before we draw the current frame
+				c.clearRect(0, 0, cWidth, cHeight);
+				background.draw();
+				c.font = "24px Arial";
+				c.fillStyle = "white";
+				if (gameState == "splash"){
+					splash.draw();
+				}
+				if (gameState == "intro"){
+					c.fillText("Welcome to Patrick's Bad Day!", 275, 200);
+					c.fillText("Patrick's day kinda sucked and he", 255, 224);
+					c.fillText("really wants to break things!", 285, 248);
+					c.fillText("Left and Right to move, Enter to shoot, and Space to jump.", 125, 272);
+					c.fillText("You have to get to the end before time runs out!", 180, 296);
+					c.fillText("Good luck!", 365, 320);
+				}
+				if (gameState == "play"){
+					c.fillText("Level: " + level, 700, 24);
+					c.fillText("Lives: " + lives, 700, 48);
+					c.fillText("Score: " + score, 690, 72);
+					c.fillText("Time Left: " + tempHolder, 660, 96);
+					patrick.draw();
+					mario1.draw();
+					mario2.draw();
+					if (level >= 2){
+						mario3.draw();
+						platform4.draw();
+					}
+					if (level == 3){
+						mario4.draw();
+						mario5.draw();
+					}
+					bubble.draw();
+					platform1.draw();
+					platform2.draw();
+					platform3.draw();
+					krustyKrab.draw();
+				}
+				if (gameState == "death"){
+					c.fillText("You died! Press R to try again!", 270, 200);
+					if (lives > 1){
+						c.fillText("You have " + lives + " lives left!", 320, 224);
+					}
+					else{
+						c.fillText("You have " + lives + " life left!", 320, 224);
+					}
+				}
+				if (level == 2 && gameState == "loadingscreen"){
+					c.fillText("Good Job! You passed Level 1!", 240, 200);
+					c.fillText("Press Shift to move on!", 275, 224);
+				}
+				if (level == 3 && gameState == "loadingscreen"){
+					c.fillText("Nice! You passed Level 2!", 268, 200);
+					c.fillText("Press Shift to move on!", 285, 224);
+				}
+				if (gameState == "gameover"){
+					if (lives == 0){
+						c.fillText("You're out of lives! D:", 300, 200);
+					}
+					if (tempHolder == 0){
+						c.fillText("You're out of time! D:", 300, 200);
+					}
+					c.fillText("Press Backspace to restart!", 265, 224);
+				}
+				if (gameState == "win"){
+					c.fillText("Congratulations! You beat the game!", 235, 200);
+					c.fillText("Your score: " + score, 340, 224);
+					c.fillText("Press Backspace to restart!", 290, 248);
+					if (score >= 100){
+						c.fillText("You're the best you killed all the enemies! ;D", 200, 272);
+					}
+					else{
+						c.fillText("You didn't kill all the enemies!", 275, 272);
+						c.fillText("Do better next time!", 325, 296);
+					}
+				}
+			}
+		</script>
+	</head>
+	<body onload="gameFrameworkInit()">	
+		<canvas id="myCanvas" width="800" height="600"></canvas>
+	</body>
+</html>

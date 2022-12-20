@@ -1,0 +1,265 @@
+<html>
+	<head>
+		<title> Store </title>
+		<link rel=stylesheet type="text/css" href="Project 4 Store.css">
+		<style>
+			table, th, td{
+				border: 1px solid lime;
+				background-color: black;
+			}
+		</style>
+		<img src="Panda Logo.jpg" width="300" height="300">
+		<br><br>
+		<script>
+			//All the arrays that hold each of the products in the shop
+			var program = ["HTML", "Javascript", "CSS", "Java", "Python"];
+			var price = [15, 20, 10, 25, 30];
+			var shortDescription = ["Hypertext Markup Language.", "An object-oriented computer programming language.", "Cascading Style Sheets.", "A general-purpose computer programming language.", "A high-level general-purpose programming language."];
+			var image = ["HTML.jpg", "Javascript.jpg", "CSS.jpg", "Java.jpg", "Python.jpg"];
+			var chooseItem = [0, 1, 2, 3 ,4];
+			var checkboxName = ["id0", "id1", "id2", "id3", "id4"];
+			var checked = [false, false, false, false, false];
+			//Displays all the products in the shop in a table format
+			function showShop(){
+				var output = "";
+				output += "<tr> <th> Name </th> <th> Price</th> <th> Description </th> <th> Image </th> </tr>";
+				var arraySize = program.length;
+				for (i = 0; i < arraySize; i++){
+					output += "<tr><td>" + "<input type=checkbox id=" + checkboxName[i] + ">" + program[i]  + "</td><td>" + "€" + price[i] + "</td><td>" + shortDescription[i] + "</td><td><img height=200 width=200 src=" + image[i] + "></img></td></tr>";
+				}
+				idTableItems.innerHTML = output;
+				idTableItems.src = output;
+			}
+			//Returns if checkbox is checked
+			function getCheckBox(index){
+				if (index == 0){
+					return id0.checked;
+				}
+				if (index == 1){
+					return id1.checked;
+				}
+				if (index == 2){
+					return id2.checked;
+				}
+				if (index == 3){
+					return id3.checked;
+				}
+				if (index == 4){
+					return id4.checked;
+				}
+			}
+			//Makes checked value equal to value variable, letting it become a different variable
+			function setCheckBox(index, value){
+				if (index == 0){
+					id0.checked = value;
+				}
+				if (index == 1){
+					id1.checked = value;
+				}
+				if (index == 2){
+					id2.checked = value;
+				}
+				if (index == 3){
+					id3.checked = value;
+				}
+				if (index == 4){
+					id4.checked = value;
+				}
+			}
+			//Sorts in A-Z by product name
+			function sortAZ(){
+				var arraySize = program.length;
+				var sortDone;
+				do{
+					sortDone = true;
+					for (i = 0; i < arraySize - 1; i++){
+						if (program[i] > program[i + 1]){
+							sortDone = false;
+							
+							var temp1 = program[i];
+							program[i] = program[i + 1];
+							program[i + 1] = temp1;
+							
+							var temp2 = price[i];
+							price[i] = price[i + 1];
+							price[i + 1] = temp2;
+							
+							var temp3 = shortDescription[i];
+							shortDescription[i] = shortDescription[i + 1];
+							shortDescription[i + 1] = temp3;
+							
+							var temp4 = image[i];
+							image[i] = image[i + 1];
+							image[i + 1] = temp4;
+							
+							var temp5 = chooseItem[i];
+							chooseItem[i] = chooseItem[i + 1];
+							chooseItem[i + 1] = temp5;
+							
+							
+							var temp6 = getCheckBox(i);
+							setCheckBox(i, getCheckBox(i + 1));
+							setCheckBox(i + 1, temp6);
+						}
+					}
+				} while (sortDone == false)
+				showShop();
+			}
+			//Sorts in Z-A by product name
+			function sortZA(){
+				var arraySize = program.length;
+				var sortDone;
+				do{
+					sortDone = true;
+					for (i = 0; i < arraySize - 1; i++){
+						if (program[i] < program[i + 1]){
+							sortDone = false;
+							
+							var temp1 = program[i];
+							program[i] = program[i + 1];
+							program[i + 1] = temp1;
+							
+							var temp2 = price[i];
+							price[i] = price[i + 1];
+							price[i + 1] = temp2;
+							
+							var temp3 = shortDescription[i];
+							shortDescription[i] = shortDescription[i + 1];
+							shortDescription[i + 1] = temp3;
+							
+							var temp4 = image[i];
+							image[i] = image[i + 1];
+							image[i + 1] = temp4;
+							
+							var temp5 = chooseItem[i];
+							chooseItem[i] = chooseItem[i + 1];
+							chooseItem[i + 1] = temp5;
+						}
+					}
+				} while (sortDone == false)
+				showShop();
+			}
+			//Sorts in Low to High by product price
+			function sortLowToHigh(){
+				var arraySize = price.length;
+				var sortDone;
+				do{
+					sortDone = true;
+					for (i = 0; i < arraySize - 1; i++){
+						if (price[i] > price[i + 1]){
+							sortDone = false;
+							
+							var temp1 = program[i];
+							program[i] = program[i + 1];
+							program[i + 1] = temp1;
+							
+							var temp2 = price[i];
+							price[i] = price[i + 1];
+							price[i + 1] = temp2;
+							
+							var temp3 = shortDescription[i];
+							shortDescription[i] = shortDescription[i + 1];
+							shortDescription[i + 1] = temp3;
+							
+							var temp4 = image[i];
+							image[i] = image[i + 1];
+							image[i + 1] = temp4;
+							
+							var temp5 = chooseItem[i];
+							chooseItem[i] = chooseItem[i + 1];
+							chooseItem[i + 1] = temp5;
+						}
+					}
+				} while (sortDone == false)
+				showShop();
+			}
+			//Sorts in High to Low by product price
+			function sortHighToLow(){
+				var arraySize = price.length;
+				var sortDone;
+				do{
+					sortDone = true;
+					for (i = 0; i < arraySize - 1; i++){
+						if (price[i] < price[i + 1]){
+							sortDone = false;
+							
+							var temp1 = program[i];
+							program[i] = program[i + 1];
+							program[i + 1] = temp1;
+							
+							var temp2 = price[i];
+							price[i] = price[i + 1];
+							price[i + 1] = temp2;
+							
+							var temp3 = shortDescription[i];
+							shortDescription[i] = shortDescription[i + 1];
+							shortDescription[i + 1] = temp3;
+							
+							var temp4 = image[i];
+							image[i] = image[i + 1];
+							image[i + 1] = temp4;
+							
+							var temp5 = chooseItem[i];
+							chooseItem[i] = chooseItem[i + 1];
+							chooseItem[i + 1] = temp5;
+						}
+					}
+				} while (sortDone == false)
+				showShop();
+			}
+			//Opens an About Us page
+			function callLink(){
+				window.open("file:///H:/M256SUKTHANKAR/Projects/Project%204%20Store/Project%204%20About%20Us.html");
+			}
+			//Adds selected checkboxes to cart
+			function addToCart(){
+				var output2 = "";
+				var arraySize = program.length;
+				for (i = 0; i < arraySize; i++){
+					//Adds an item to the cart 
+					if (getCheckBox(i) == true){
+						output2 += program[i] + "<br>";
+					}
+				}
+				id0.checked = false;
+				id1.checked = false;
+				id2.checked = false;
+				id3.checked = false;
+				id4.checked = false;
+				idDivOutput.innerHTML += output2;
+			}
+			//Confirm items to be bought
+			function checkOut(){
+				if (confirm("Are you sure you want to buy the chosen items?") == true){
+					alert("Thank you for shopping with us today!");
+				}
+			}
+			//Opens a Track Shipements page
+			function showDelivery(){
+				window.open("file:///H:/M256SUKTHANKAR/Projects/Project%204%20Store/Project%204%20Track%20Shipments.html");
+			}
+		</script>
+	</head>
+	<body onLoad="showShop()" align=center>
+		<div>
+			<p class="button button1" onClick="sortAZ()"> Sort A-Z </p>
+			<p class="button button1"onClick="sortZA()"> Sort Z-A </p>
+			<p class="button button1" onClick="sortLowToHigh()"> Sort Low to High </p>
+			<p class="button button1" onClick="sortHighToLow()"> Sort High to Low </p>
+			<p class="button button1" onClick="callLink()"> About Us </p>
+			<p class="button button1" onClick="addToCart()"> Add to Cart </p>
+			<p class="button button1" onClick="checkOut()"> Proceed to Checkout </p>
+			<p class="button button1" onClick="showDelivery()"> Track Shipments </p>
+		</div>
+		<address>
+			Click the checkboxes of the programs you want to add to your cart.
+			After you've decided what to buy, click "Proceed to Checkout" to confirm your purchases!
+			Clicking "Track Shipments" tells you where your purchased items are (or does it...?).
+			For more information click here: <a href="mailto:sukthankar8493@students.d211.org">Satej Sukthankar</a> 
+			or click here: <a href="mailto:han6042@students.d211.org">Thomas Han</a>.
+			<p class="listOfItems">Scroll to the bottom of the page to view your items!</p>
+		</address>
+		<table id="idTableItems" src="idTableImages" align=center></table>
+		<div class="listOfItems" id="idDivOutput"> Here are the items you have added to your cart!<br></div>
+	</body>
+</html>

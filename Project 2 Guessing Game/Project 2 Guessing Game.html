@@ -1,0 +1,123 @@
+<!DOC TYPE>
+<html>
+	<head>
+		<title> Guessing Game </title>
+		<link rel=stylesheet type="text/css" href="Project 2 Guessing Game.css">
+		<script>
+			var countRounds = 0;
+			var countWins = 0;
+			var countLosses = 0;
+			var guess = 6;
+			var num;
+			generateNum();
+			//Displays all divider elements
+			function showAll(){
+				document.getElementById("idShowInstructions").innerHTML = "The Instructions: You have 6 guesses to guess the random number the computer makes up. The rounds won will update when you win, and the rounds lost will update when you lose. After you win or lose 3 rounds, the game will reset! Click the reset button to restart early. Good luck!"
+				document.getElementById("idNumGuessLeft").innerHTML = guess;
+				document.getElementById("idRndsPlayed").innerHTML = countRounds;
+				document.getElementById("idRndsWon").innerHTML = countWins;
+				document.getElementById("idRndsLost").innerHTML = countLosses;
+			}
+			//Changes all divider elements based on what the player does
+			function tryToGuess(){
+				guess = guess - 1;
+				var number = Number(document.getElementById("idGuessNum").value);
+				if (number == num){
+					window.alert("Congratulations!");
+					countWins = countWins + 1;
+					countRounds = countRounds + 1;
+					generateNum();
+					guess = 6;
+				}
+				else if (number > 50){
+					window.alert("Input something less than 50!");
+					guess = guess + 1;
+					document.getElementById("idNumGuessLeft").innerHTML = guess;
+				}
+				else if (number > num){
+					window.alert("Sorry! The number you guessed was too high.");
+				}
+				else
+					window.alert("Sorry! The number you guessed was too low.");
+				//Enhancement (Tells if the input number is greater than 50 and doesn't use a guess if it is)
+				
+				showAll();
+				if (guess == 0){
+					window.alert("Sorry! You ran out of guesses! The number was " + num + "! A new round will now start!");
+					countLosses = countLosses + 1;
+					document.getElementById("idRndsLost").innerHTML = countLosses;
+					guess = 6;
+					document.getElementById("idNumGuessLeft").innerHTML = guess;
+					generateNum();
+					countRounds = countRounds + 1;
+					document.getElementById("idRndsPlayed").innerHTML = countRounds;
+				}
+				if (countRounds > 0){
+					document.getElementById("idShowInstructions").innerHTML = "";
+				}
+				//Enhancement (Resets game once 3 rounds are either one or lost)
+				if (countWins == 3){
+					window.alert("You win the game! It will now reset!");
+					location.reload();
+					document.getElementById("idShowInstructions").innerHTML = "";
+				}
+				else if (countLosses == 3){
+					window.alert("You lose the game! It will now reset!");
+					location.reload();
+					document.getElementById("idShowInstructions").innerHTML = "";
+				}
+				
+			}
+			//Creates the random number
+			function generateNum(){
+				num = Math.random();
+				num = num * 50;
+				num = Math.floor(num);
+				num = num + 1;
+				console.log(num);
+			}
+			//Resets the game Enhancement (Lets you confirm your decision)
+			function resetRound(){
+				if (confirm("Are you sure?") == true){
+					location.reload();
+				}	
+			}
+		</script>
+	</head>
+	<body onLoad="showAll()">
+		<video playsinline autoplay muted loop poster="giphy.gif" id="bgvid">
+		<source src="giphy.webm" type="video/webm">
+		<source src="giphy.mp4" type="video/mp4">
+		</video>
+		
+		<div id="idShowInstructions"></div>
+		Your Guess:
+		<input type=number id="idGuessNum">
+		<br><br>
+	
+		<div>
+			<p class=coolButton1 onClick="tryToGuess()"> Guess! </p>
+		</div>
+		<br><br>
+		
+		Number of Guesses Left:
+		<div id="idNumGuessLeft"></div>
+		<br><br>
+		
+		Number of Rounds Played:
+		<div id="idRndsPlayed"></div>
+		<br><br>
+		
+		Number of Rounds Won:
+		<div id="idRndsWon"></div>
+		<br><br>
+		
+		Number of Rounds Lost:
+		<div id="idRndsLost"></div>
+		<br><br>
+		
+		<div> 
+			<p class=coolButton2 onClick="resetRound()"> Reset Game </p>
+		</div>
+	</body>
+</html>

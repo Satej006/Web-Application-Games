@@ -1,0 +1,210 @@
+<html>
+	<head>
+		<title> War </title>
+		<link rel=stylesheet type="text/css" href="Project 3 War.css">
+		<script>
+			var cards = [];
+			var wins = 0;
+			var losses = 0;
+			var ties = 0;
+			var rounds = 0;
+			var numOfPlayerNumber = 0;
+			var numOfPlayerFace = 0;
+			var numOfComputerNumber = 0;
+			var numOfComputerFace = 0;
+			//Loads all the values necessary at the beginning
+			function createCards(){
+				for (i = 0; i <= 51; i++){
+					cards[i] = i + ".jpg";
+				}
+				document.getElementById("idNumWins").innerHTML = wins;
+				document.getElementById("idNumLosses").innerHTML = losses;
+				document.getElementById("idNumTies").innerHTML = ties;
+				document.getElementById("idCurrentRound").innerHTML = rounds;
+				document.getElementById("idRoundResult").innerHTML = "You have to play first!";
+				document.getElementById("idPlayerNumCards").innerHTML = numOfPlayerNumber;
+				document.getElementById("idPlayerFaceCards").innerHTML = numOfPlayerFace;
+				document.getElementById("idComputerNumCards").innerHTML = numOfComputerNumber;
+				document.getElementById("idComputerFaceCards").innerHTML = numOfComputerFace;
+				document.getElementById("idPlayerCard").src = "Card Background.jpg";
+				document.getElementById("idComputerCard").src = "Card Background.jpg";
+			
+			}
+			//Creates random numbers for human and computer
+			function randomIntegers(){
+				num1 = Math.random();
+				num1 = num1 * 51;
+				num1 = Math.floor(num1);
+				num1 = num1 + 1;
+				
+				num2 = Math.random();
+				num2 = num2 * 51;
+				num2 = Math.floor(num2);
+				num2 = num2 + 1;
+			}
+			//Takes the random numbers and is putting them in to display the card value
+			function chooseCards(){
+				randomIntegers();
+				document.getElementById("idPlayerCard").src = cards[num1];
+				document.getElementById("idComputerCard").src = cards[num2];
+				rankCards();
+				if (num1 > num2){
+						wins = wins + 1;
+						document.getElementById("idNumWins").innerHTML = wins;
+						document.getElementById("idRoundResult").innerHTML = "You won this round!";
+						rounds = rounds + 1;
+						document.getElementById("idCurrentRound").innerHTML = rounds;
+				}
+				else if (num1 < num2){
+						losses = losses + 1;
+						document.getElementById("idNumLosses").innerHTML = losses;
+						document.getElementById("idRoundResult").innerHTML = "You lost this round!";
+						rounds = rounds + 1;
+						document.getElementById("idCurrentRound").innerHTML = rounds;
+				}
+				else{
+						ties = ties + 1;
+						document.getElementById("idNumTies").innerHTML = ties;
+						document.getElementById("idRoundResult").innerHTML = "You tied this round!";
+						rounds = rounds + 1;
+						document.getElementById("idCurrentRound").innerHTML = rounds;
+				}
+				displayStats();
+				//Enhancement #1 - Declares a winner
+				if (rounds == 25){
+					if (wins > losses){
+						alert("YOU HAVE WON! CONGRATULATIONS!");
+						location.reload();
+					}
+					else if (wins < losses){
+						alert("YOU HAVE LOST! BETTER LUCK NEXT TIME!");
+						location.reload();
+					}
+					else
+						alert("YOU HAVE TIED! COOLIO!");
+						location.reload();
+				}
+			}
+			//Ranks cards
+			function rankCards(){
+				if (num1 >= 0 && num1 <= 12){
+					num1 = num1 + 2;
+				}
+				else if (num1 >= 13 && num1 <= 25){
+					num1 = num1 - 11;
+				}
+				else if (num1 >= 26 && num1 <= 38){
+					num1 = num1 - 24;
+				}
+				else{
+					num1 = num1 - 37;
+				}
+				
+				if (num2 >= 0 && num2 <= 12){
+					num2 = num2 + 2;
+				}
+				else if (num2 >= 13 && num2 <= 25){
+					num2 = num2 - 11;
+				}
+				else if (num2 >= 26 && num2 <= 38){
+					num2 = num2 - 24;
+				}
+				else{
+					num2 = num2 - 37;
+				}
+				console.log(num1);
+				console.log(num2);
+			}
+			//Enhancement #2 - Shows a card of the same rank
+			function tiesCards(){
+				randomIntegers();
+				while (num1 != num2){
+					num2 = Math.random(num2);
+					num2 = num2 * 51;
+					num2 = Math.floor(num2);
+					num2 = num2 + 1;
+					document.getElementById("idPlayerCard").src = cards[num1];
+					document.getElementById("idComputerCard").src = cards[num2];
+					rankCards();
+				}
+				document.getElementById("idRoundResult").innerHTML = "This doesn't count towards your score!";
+			}
+			//Enhancement #3 - Shows the statistics of number and face cards played for human and computer
+			function displayStats(){
+				if (num1 >= 0 && num1 <= 10){
+					numOfPlayerNumber = numOfPlayerNumber + 1;
+					document.getElementById("idPlayerNumCards").innerHTML = numOfPlayerNumber;
+				}
+				else if (num1 >= 11 && num1 <= 13){
+					numOfPlayerFace = numOfPlayerFace + 1;
+					document.getElementById("idPlayerFaceCards").innerHTML = numOfPlayerFace;
+				}
+				else{
+					numOfPlayerNumber = numOfPlayerNumber + 1;
+					document.getElementById("idPlayerNumCards").innerHTML = numOfPlayerNumber;
+				}
+				
+				if (num2 >= 0 && num2 <= 10){
+					numOfComputerNumber = numOfComputerNumber + 1;
+					document.getElementById("idComputerNumCards").innerHTML = numOfComputerNumber;
+				}
+				else if (num2 >= 11 && num2 <= 13){
+					numOfComputerFace = numOfComputerFace + 1;
+					document.getElementById("idComputerFaceCards").innerHTML = numOfComputerFace;
+				}
+				else{
+					numOfComputerNumber = numOfComputerNumber + 1;
+					document.getElementById("idComputerNumCards").innerHTML = numOfComputerNumber;
+				}
+			}
+			function resetGame(){
+				if (confirm("Are you sure?") == true){
+					location.reload();
+				}
+			}
+		</script>
+	</head>
+	<body onLoad="createCards()">
+		Instructions: Click the button on the left to deal a random card to you and the computer. Click the button on the right to deal the same ranked card to you and the computer. The use of this button will not affect your score whatsoever. After 10 rounds, a winner will be decided and the game will reset. There is also a reset button on the bottom of the page to completely restart. Good luck!
+		<br><br>
+		<p class=coolButton onClick="chooseCards()"> Play a Round </p>
+		<br><br>
+		<p class=coolButton onClick="tiesCards()"> Play Pacifist Round </p>
+		<br><br>
+
+		
+		Current Round:
+		<div id="idCurrentRound"></div>
+		
+		Current Wins:
+		<div id="idNumWins"></div>
+		
+		Current Losses:
+		<div id="idNumLosses"></div>
+		
+		Current Ties:
+		<div id="idNumTies"></div>
+		
+		Round Result:
+		<div id="idRoundResult"></div>
+		<br><br>
+		
+		<img id="idPlayerCard">
+		<img id="idComputerCard">
+		<br><br>
+		
+		Number of Number Cards You Played:
+		<div id="idPlayerNumCards"></div>
+		
+		Number of Face Cards You Played:
+		<div id="idPlayerFaceCards"></div>
+		
+		Number of Number Cards Computer Played:
+		<div id="idComputerNumCards"></div>
+		
+		Number of Face Cards Computer Played:
+		<div id="idComputerFaceCards"></div>
+		
+		<p class=coolButton onClick="resetGame()"> Reset Game </p>
+	</body>
+</html>

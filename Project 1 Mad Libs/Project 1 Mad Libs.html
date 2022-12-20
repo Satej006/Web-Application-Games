@@ -1,0 +1,110 @@
+<!DOC TYPE>
+<html>
+	<head>
+		<title> Mad Libs </title>
+		<link rel=stylesheet type="text/css" href="Project 1 Mad Libs.css">
+			<div class=newWord></div>
+			
+		<script>
+		//Write the new story
+		function newParagraph(){
+			var hero = document.getElementById("idTxtHero").value;
+			var villain = document.getElementById("idTxtVillain").value;
+			var place = document.getElementById("idTxtPlace").value;
+			var food = document.getElementById("idTxtFood").value;
+			var verb = document.getElementById("idSlctVerb").value;
+			var adverb = document.getElementById("idTxtAdverb").value;
+			var adjective1 = document.getElementById("idTxtAdjctve1").value;
+			var adjective2 = document.getElementById("idTxtAdjctve2").value;
+		
+			var output = "";
+			output += "<newWord>" + hero + "</newWord>" + " was a special person. ";
+			output += "<newWord>" + hero + "</newWord>" + " was special because he/she lived in ";
+			output += "<newWord>" + place + "</newWord>" + " and ate only bananas all the time. ";
+			output += "<newWord>" + hero + "</newWord>" + " had a friend, ";
+			output += "<newWord>" + villain + "</newWord>" + ", but they ended up hating each other. "
+			output += "<newWord>" + villain + "</newWord>" + " had stolen ";
+			output += "<newWord>" + hero + "</newWord>" + "'s ";
+			output += "<newWord>" + food + "</newWord>" + ", and ";
+			output += "<newWord>" + villain + "</newWord>" + " did not want to give it back. ";
+			output += "<newWord>" + hero + "</newWord>" + " was ";
+			output += "<newWord>" + adjective1 + "</newWord>" + " and ";
+			output += "<newWord>" + adjective2 + "</newWord>" + " and ";
+			output += "<newWord>" + adverb + "</newWord>" + " raced to get his/her ";
+			output += "<newWord>" + food + "</newWord>" + " back.";
+		
+			document.getElementById("idDivTxt").innerHTML = output;
+		}
+		//Write the old story
+		function oldParagraph(){
+			var output = "";
+			output += "Bob was a special person. ";
+			output += "Bob was special because he/she lived in ";
+			output += "Palatine and ate only bananas all the time. ";
+			output += "Bob had a friend, ";
+			output += "Carl, but they ended up hating each other. "
+			output += "Carl had stolen ";
+			output += "Bob's ";
+			output += "bananas, and ";
+			output += "Carl did not want to give it back. ";
+			output += "Bob was ";
+			output += "angry and ";
+			output += "tired and ";
+			output += "quickly raced to get his/her ";
+			output += "bananas back.";
+		
+			document.getElementById("idDivTxt").innerHTML = output;
+		}
+		//Make a message about the background
+		function trollMessage(){
+			window.alert("The background is now frozen, so you changed the background by yourself! (I don't know how change it D:)");
+		}
+		</script>
+	</head>
+	
+	<body id="idBody">
+		Hero:
+		<input type="text" id="idTxtHero">
+		<br><br>
+		
+		Villain:
+		<input type="text" id="idTxtVillain">
+		<br><br>
+		
+		Place:
+		<input type="text" id="idTxtPlace">
+		<br><br>
+		
+		Food:
+		<input type="text" id="idTxtFood">
+		<br><br>
+		
+		Verb:
+		<select id="idSlctVerb">
+			<option> destroyed </option>
+			<option> spoke </option>
+			<option> cut </option>
+			<option> stole </option>
+		</select>
+		<br><br>
+		
+		Adverb:
+		<input type="text" id="idTxtAdverb">
+		<br><br>
+		
+		Adjective #1:
+		<input type="text" id="idTxtAdjctve1">
+		<br><br>
+		
+		Adjective #2:
+		<input type="text" id="idTxtAdjctve2">
+		<br><br>
+		
+	<div>
+		<p class=button1 onClick="trollMessage()"> See Secret Background </p>
+		<p class=button2 onClick="newParagraph()"> Generate the New Story </p>
+		<p class=button3 onClick="oldParagraph()"> Generate the Old Story </p>
+	</div>
+		<div id="idDivTxt"> </div>
+	</body>
+</html>

@@ -1,0 +1,112 @@
+body{
+	color: lime;
+	text-align: center;
+	animation: blink 1s linear infinite;
+	-webkit-animation: blink 1s linear infinite;
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+	unicode-bidi: bidi-override;
+	direction: rtl;
+}
+div{
+	-webkit-transform: rotateY(180deg);
+	-moz-transform: rotateY(180deg);
+	-o-transform: rotateY(180deg);
+	-ms-transform: rotateY(180deg);
+	unicode-bidi: bidi-override;
+	direction: rtl;
+}
+newWord{
+	font-size: 900;
+	font-weight: 50;
+}
+.button1{
+	background-color: black;
+	border: double;
+    color: lime;
+	padding: 15px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+	font-family: Impact;
+	cursor: crosshair;
+	border-radius: 50px;
+}
+.button2{
+	background-color: black;
+	border: double;
+    color: lime;
+	padding: 15px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+	font-family: Impact;
+	cursor: crosshair;
+	border-radius: 50px;
+}
+.button3{
+	background-color: black;
+	border: double;
+    color: lime;
+	padding: 15px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+	font-family: Impact;
+	cursor: crosshair;
+	border-radius: 50px;
+}
+@keyframes blink{
+  0% {
+    background: violet;
+  }
+  14.3% {
+    background: indigo;
+  }
+  28.6% {
+    background: blue;
+  }
+  42.9% {
+    background: green;
+  }
+  57.2% {
+    background: yellow;
+  }
+  71.5% {
+    background: orange;
+  }
+  85.8% {
+    background: red;
+  }
+  100% {
+    background: violet;
+  }
+}
+@-webkit-keyframes blink{
+  0% {
+    background: violet;
+  }
+  14.3% {
+    background: indigo;
+  }
+  28.6% {
+    background: blue;
+  }
+  42.9% {
+    background: green;
+  }
+  57.2% {
+    background: yellow;
+  }
+  71.5% {
+    background: orange;
+  }
+  85.8% {
+    background: red;
+  }
+  100% {
+    background: violet;
+  }
+}

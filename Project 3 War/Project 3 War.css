@@ -1,0 +1,13 @@
+body{
+	border-radius: 50px;
+	color: lawngreen; 
+	font-family: Arial;
+	text-align: center;
+	background-color: black;
+}
+.coolButton{
+	font-family: Arial;
+	border: double;
+	width: 100px;
+	margin: auto;
+}
